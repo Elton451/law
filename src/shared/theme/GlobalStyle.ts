@@ -14,6 +14,14 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section[id] {
+    scroll-margin-top: 88px;
+  }
+
   body {
     margin: 0;
     background-color: ${colors.bgLayout};
