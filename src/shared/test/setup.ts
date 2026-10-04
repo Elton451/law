@@ -10,6 +10,19 @@ class ResizeObserverStub {
 
 globalThis.ResizeObserver ??= ResizeObserverStub;
 
+// jsdom has no matchMedia; antd's responsive hooks (e.g. Form.Item) call it on mount.
+window.matchMedia ??= (query: string) =>
+  ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }) as MediaQueryList;
+
 afterEach(() => {
   cleanup();
 });

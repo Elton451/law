@@ -1,5 +1,8 @@
 import { Button } from 'antd';
-import { LogoWrapper, NavActions, NavMenu, StyledHeader } from './styles';
+import { useNavigate } from 'react-router';
+import Logo from '@shared/components/Logo/Logo';
+import { paths } from '@shared/routes';
+import { NavActions, NavMenu, StyledHeader } from './styles';
 
 const navItems = [
   { key: 'o-que-e', label: 'O que é' },
@@ -12,12 +15,11 @@ const scrollToSection = (sectionId: string) => {
 };
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <StyledHeader>
-      <LogoWrapper>
-        <span>NOVELO</span>
-        <span>JURÍDICO</span>
-      </LogoWrapper>
+      <Logo />
 
       <NavMenu
         mode="horizontal"
@@ -27,8 +29,12 @@ const Navbar = () => {
       />
 
       <NavActions align="center" gap="small">
-        <Button type="text">Entrar</Button>
-        <Button type="primary">Começar</Button>
+        <Button type="text" onClick={() => navigate(paths.login)}>
+          Entrar
+        </Button>
+        <Button type="primary" onClick={() => navigate(paths.signUp)}>
+          Começar
+        </Button>
       </NavActions>
     </StyledHeader>
   );

@@ -17,24 +17,6 @@ export const StyledHeader = styled(Header)`
   border-bottom: 1px solid ${colors.border};
 `;
 
-export const LogoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  font-size: 15px;
-  white-space: nowrap;
-
-  span:first-child {
-    color: ${colors.textPrimary};
-  }
-
-  span:last-child {
-    color: ${colors.primary};
-  }
-`;
-
 export const NavMenu = styled(Menu)`
   flex: 1;
   min-width: 0;

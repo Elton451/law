@@ -1,7 +1,11 @@
 import { Button, Typography } from 'antd';
+import { useNavigate } from 'react-router';
+import { paths } from '@shared/routes';
 import { Actions, Description, Icon, Wrapper } from './styles';
 
 const FinalCtaSection = () => {
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <Icon>🧶</Icon>
@@ -11,10 +15,12 @@ const FinalCtaSection = () => {
         visual, gamificada e elegante.
       </Description>
       <Actions>
-        <Button type="primary" size="large">
+        <Button type="primary" size="large" onClick={() => navigate(paths.signUp)}>
           ✦ Começar gratuitamente
         </Button>
-        <Button size="large">Já tenho conta</Button>
+        <Button size="large" onClick={() => navigate(paths.login)}>
+          Já tenho conta
+        </Button>
       </Actions>
     </Wrapper>
   );
