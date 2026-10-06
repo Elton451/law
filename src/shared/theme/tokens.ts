@@ -25,6 +25,17 @@ export const colors = {
   info: '#6B7280',
 } as const;
 
+// One identity color per trail (novelo), keyed by the trail's slug in the database.
+export const trailColors: Record<string, string> = {
+  administrativo: '#5B8DB8',
+  civil: '#5E9E7A',
+  constitucional: '#B5654A',
+  empresarial: '#8A6FB5',
+  penal: '#B8484E',
+  trabalhista: '#D08A3C',
+  tributario: '#4FA3A0',
+};
+
 export const typography = {
   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontFamilyCode: "'Fira Code', monospace",

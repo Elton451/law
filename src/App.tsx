@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import Admin from '@modules/admin';
 import { LoginPage, SignUpPage } from '@modules/auth';
 import Home from '@modules/home';
-import Trails from '@modules/trails';
+import { TrailPage, TrailsPage } from '@modules/trails';
 import { AuthProvider } from '@shared/auth/AuthProvider';
 import RedirectIfAuthenticated from '@shared/auth/RedirectIfAuthenticated';
 import RequireAuth from '@shared/auth/RequireAuth';
@@ -39,7 +39,15 @@ function App() {
               path={paths.trails}
               element={
                 <RequireAuth>
-                  <Trails />
+                  <TrailsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.trail(':slug')}
+              element={
+                <RequireAuth>
+                  <TrailPage />
                 </RequireAuth>
               }
             />
