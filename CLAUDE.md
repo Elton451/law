@@ -2,7 +2,7 @@
 
 ## Modules
 
-A **module** is a self-contained feature area under `src/modules/<name>/`. Today: `home`, `auth`, `trails`, `admin`, `student-summaries`, `flashcards`.
+A **module** is a self-contained feature area under `src/modules/<name>/`. Today: `home`, `auth`, `trails`, `case-study`, `admin`, `student-summaries`, `flashcards`.
 
 - `index.tsx` is the module's public API — the only file anything outside the module may import. Everything else in the module is a private implementation detail.
 - `fragments/` holds components used only inside that module (page sections, local widgets). If a fragment is needed by a second module, promote it to `shared/components` instead of importing it across modules.
@@ -21,6 +21,8 @@ A **module** is a self-contained feature area under `src/modules/<name>/`. Today
 - Session state is shared, not owned by a module: `AuthProvider` + `useAuth` in `src/shared/auth/`. Guard routes with `RequireAuth` (optionally `role="admin"`) and guest-only pages with `RedirectIfAuthenticated`.
 - User roles live in `public.profiles.role`, never in user metadata (the client controls metadata). Permission checks must also be enforced by RLS, not only by route guards.
 - Routes are declared in `src/App.tsx`; path constants are in `src/shared/routes.ts`.
+- Load data with `useAsync` from `src/shared/hooks/useAsync.ts` (pass a stable function: module-level or `useCallback`). Writes that must be trusted (timers, submissions) go through `security definer` SQL functions, not direct table writes.
+- `supabase/seed.sql` holds sample content for development; it is not a migration.
 
 ## Theme usage
 

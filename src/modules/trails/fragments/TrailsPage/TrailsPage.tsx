@@ -15,7 +15,7 @@ const TrailsContent = () => {
         status="error"
         title="Não foi possível carregar as trilhas"
         extra={
-          <Button type="primary" onClick={trails.retry}>
+          <Button type="primary" onClick={trails.reload}>
             Tentar novamente
           </Button>
         }
@@ -27,7 +27,7 @@ const TrailsContent = () => {
     <Grid>
       {trails.status === 'loading'
         ? Array.from({ length: SKELETON_COUNT }, (_, index) => <Skeleton.Node key={index} active />)
-        : trails.trails.map((trail) => <TrailCard key={trail.id} trail={trail} />)}
+        : trails.data.map((trail) => <TrailCard key={trail.id} trail={trail} />)}
     </Grid>
   );
 };

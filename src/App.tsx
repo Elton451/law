@@ -2,6 +2,7 @@ import { ConfigProvider } from 'antd';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import Admin from '@modules/admin';
 import { LoginPage, SignUpPage } from '@modules/auth';
+import { AttemptPage, CaseStudyAreaPage } from '@modules/case-study';
 import Home from '@modules/home';
 import { TrailPage, TrailsPage } from '@modules/trails';
 import { AuthProvider } from '@shared/auth/AuthProvider';
@@ -48,6 +49,22 @@ function App() {
               element={
                 <RequireAuth>
                   <TrailPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.caseStudy(':slug')}
+              element={
+                <RequireAuth>
+                  <CaseStudyAreaPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.caseAttempt(':slug', ':attemptId')}
+              element={
+                <RequireAuth>
+                  <AttemptPage />
                 </RequireAuth>
               }
             />
