@@ -13,13 +13,30 @@ export default defineConfig({
     },
   },
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/shared/test/setup.ts'],
-    globals: true,
-    // Dummy values so the Supabase client can be constructed; tests mock the network calls.
-    env: {
-      VITE_SUPABASE_URL: 'http://localhost:54321',
-      VITE_SUPABASE_PUBLISHABLE_KEY: 'test-key',
-    },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'app',
+          include: ['src/**/*.test.{ts,tsx}'],
+          environment: 'jsdom',
+          setupFiles: ['./src/shared/test/setup.ts'],
+          globals: true,
+          // Dummy values so the Supabase client can be constructed; tests mock the network calls.
+          env: {
+            VITE_SUPABASE_URL: 'http://localhost:54321',
+            VITE_SUPABASE_PUBLISHABLE_KEY: 'test-key',
+          },
+        },
+      },
+      {
+        // The migrations, run against an in-memory Postgres (supabase/tests/db.ts).
+        test: {
+          name: 'db',
+          include: ['supabase/tests/**/*.test.ts'],
+          environment: 'node',
+        },
+      },
+    ],
   },
 });

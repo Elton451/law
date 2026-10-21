@@ -2,13 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@shared/test/test-utils';
-import { discardAttempt, startAttempt } from '../../api';
+import { restartAttempt, saveDraft } from '../../api';
 import { makeAttempt } from '../../testData';
 import ResolutionView from './ResolutionView';
 
 vi.mock('../../api', () => ({
-  discardAttempt: vi.fn(),
-  startAttempt: vi.fn(),
+  restartAttempt: vi.fn(),
   saveDraft: vi.fn(),
   submitAttempt: vi.fn(),
 }));
@@ -35,7 +34,10 @@ const renderView = (attempt = makeAttempt(), state?: unknown) =>
     { route: { pathname: attemptPath, state } },
   );
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(saveDraft).mockResolvedValue();
+});
 
 // jsdom has no media queries, so the view renders its small-screen layout: one pane at a time.
 const showAnswerPane = (user = userEvent.setup()) => user.click(screen.getByText('Sua peça'));
@@ -80,17 +82,40 @@ describe('ResolutionView', () => {
     expect(screen.getByText('Autoral')).toBeInTheDocument();
   });
 
-  it('discards the attempt and opens another case, skipping the current one', async () => {
-    const user = userEvent.setup();
-    vi.mocked(discardAttempt).mockResolvedValue();
-    vi.mocked(startAttempt).mockResolvedValue('attempt-2');
-    renderView();
-
+  const requestNewCase = async (user: ReturnType<typeof userEvent.setup>) => {
     await showAnswerPane(user);
     await user.click(screen.getByRole('button', { name: 'Gerar outro teste' }));
     await user.click(await screen.findByRole('button', { name: 'Descartar e gerar outro' }));
+  };
 
-    await waitFor(() => expect(startAttempt).toHaveBeenCalledWith('trail-civil', 'case-1'));
-    expect(discardAttempt).toHaveBeenCalledWith('attempt-1');
+  it('swaps the attempt for another case in one step and opens it', async () => {
+    const user = userEvent.setup();
+    vi.mocked(restartAttempt).mockResolvedValue('attempt-2');
+    renderView();
+
+    await requestNewCase(user);
+
+    await waitFor(() =>
+      expect(screen.getByTestId('location-state')).toHaveTextContent('{"justStarted":true}'),
+    );
+    expect(restartAttempt).toHaveBeenCalledExactlyOnceWith('attempt-1');
+  });
+
+  it('keeps the student on the current attempt when no new case can be started', async () => {
+    const user = userEvent.setup();
+    vi.mocked(restartAttempt).mockRejectedValue(new Error('no active case in this trail'));
+    renderView();
+
+    await requestNewCase(user);
+
+    expect(
+      await screen.findByText('Não foi possível gerar outro teste. Tente novamente.'),
+    ).toBeInTheDocument();
+    expect(restartAttempt).toHaveBeenCalledExactlyOnceWith('attempt-1');
+    const newCase = screen.getByRole('button', { name: 'Gerar outro teste' });
+    expect(newCase).toBeEnabled();
+    expect(newCase).not.toHaveClass('ant-btn-loading');
+    expect(screen.getByRole('button', { name: 'Enviar' })).toBeEnabled();
+    expect(screen.getByTestId('location-state')).toHaveTextContent('null');
   });
 });

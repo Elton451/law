@@ -1,8 +1,8 @@
 import { Alert } from 'antd';
 import { useState } from 'react';
 import { paths } from '@shared/routes';
-import { discardAttempt, type Attempt } from '../../api';
-import { useCountdown, useStartAttempt } from '../../hooks';
+import type { Attempt } from '../../api';
+import { useCountdown, useRestartAttempt } from '../../hooks';
 import AnswerForm from '../AnswerForm/AnswerForm';
 import BackLink from '../BackLink/BackLink';
 import CaseStatement from '../CaseStatement/CaseStatement';
@@ -26,17 +26,9 @@ type ResolutionViewProps = {
 /** Reading the case and writing the piece against the clock (US-017, US-018). */
 const ResolutionView = ({ attempt, trailSlug, onSubmitted }: ResolutionViewProps) => {
   const timer = useCountdown(attempt.startedAt, attempt.timeLimitMinutes);
-  const { start, state: startState } = useStartAttempt(trailSlug);
+  const restart = useRestartAttempt(trailSlug);
   // On small screens only one pane shows at a time; both stay mounted so typing is never lost.
   const [activePane, setActivePane] = useState<PaneKey>('case');
-
-  const handleNewCase = async () => {
-    await discardAttempt(attempt.id);
-    await start(attempt.caseStudy.trailId, {
-      excludeCaseId: attempt.caseStudy.id,
-      replace: true,
-    });
-  };
 
   return (
     <>
@@ -53,13 +45,6 @@ const ResolutionView = ({ attempt, trailSlug, onSubmitted }: ResolutionViewProps
           description="Você pode continuar escrevendo e enviar normalmente, mas tente concluir a próxima peça dentro do tempo."
         />
       )}
-      {startState === 'error' && (
-        <Alert
-          type="error"
-          showIcon
-          title="Não foi possível sortear outro caso. Volte e tente de novo."
-        />
-      )}
       <PaneSwitch
         block
         options={paneOptions}
@@ -71,7 +56,11 @@ const ResolutionView = ({ attempt, trailSlug, onSubmitted }: ResolutionViewProps
           <CaseStatement caseStudy={attempt.caseStudy} />
         </Pane>
         <Pane $active={activePane === 'answer'}>
-          <AnswerForm attempt={attempt} onSubmitted={onSubmitted} onNewCase={handleNewCase} />
+          <AnswerForm
+            attempt={attempt}
+            onSubmitted={onSubmitted}
+            onNewCase={() => restart(attempt.id)}
+          />
         </Pane>
       </Columns>
     </>

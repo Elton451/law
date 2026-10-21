@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAsync } from '@shared/hooks/useAsync';
 import { paths } from '@shared/routes';
-import { fetchAttempt, fetchTrail, saveDraft, startAttempt } from './api';
+import { fetchAttempt, fetchTrail, restartAttempt, saveDraft, startAttempt } from './api';
+import { createAutosaver, type Autosaver, type AutosaveStatus } from './autosave';
 import { attemptAnswersSchema, type AttemptAnswers } from './schemas';
 import { countdown } from './timer';
 
@@ -39,7 +40,7 @@ export const useStartAttempt = (trailSlug: string) => {
   const [state, setState] = useState<StartState>('idle');
 
   const start = useCallback(
-    async (trailId: string, options: { excludeCaseId?: string; replace?: boolean } = {}) => {
+    async (trailId: string, options: { excludeCaseId?: string } = {}) => {
       setState('starting');
       try {
         const attemptId = await startAttempt(trailId, options.excludeCaseId);
@@ -48,10 +49,7 @@ export const useStartAttempt = (trailSlug: string) => {
           return;
         }
         setState('idle');
-        navigate(paths.caseAttempt(trailSlug, attemptId), {
-          replace: options.replace,
-          state: { justStarted: true },
-        });
+        navigate(paths.caseAttempt(trailSlug, attemptId), { state: { justStarted: true } });
       } catch {
         setState('error');
       }
@@ -62,36 +60,55 @@ export const useStartAttempt = (trailSlug: string) => {
   return { start, state };
 };
 
-export type AutosaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+/**
+ * "Gerar outro teste": swaps the attempt for one at another case and opens it.
+ * Rejects when that fails, and the current attempt is then left untouched.
+ */
+export const useRestartAttempt = (trailSlug: string) => {
+  const navigate = useNavigate();
+
+  return useCallback(
+    async (attemptId: string) => {
+      const nextId = await restartAttempt(attemptId);
+      navigate(paths.caseAttempt(trailSlug, nextId), {
+        replace: true,
+        state: { justStarted: true },
+      });
+    },
+    [navigate, trailSlug],
+  );
+};
+
+export type { AutosaveStatus };
 
 const AUTOSAVE_DELAY_MS = 1500;
+const AUTOSAVE_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000];
 
-/** Saves the draft shortly after the student stops typing (US-017). */
+/** Saves the draft shortly after the student stops typing, retrying on failure (US-017). */
 export const useDraftAutosave = (attemptId: string, values: AttemptAnswers) => {
   const [status, setStatus] = useState<AutosaveStatus>('idle');
+  const autosaver = useRef<Autosaver<AttemptAnswers> | null>(null);
   const serialized = JSON.stringify(values);
-  const lastSaved = useRef(serialized);
+  const lastScheduled = useRef(serialized);
 
   useEffect(() => {
-    if (serialized === lastSaved.current) return;
+    const saver = createAutosaver(
+      (answers: AttemptAnswers) => saveDraft(attemptId, answers),
+      setStatus,
+      { delayMs: AUTOSAVE_DELAY_MS, retryDelaysMs: AUTOSAVE_RETRY_DELAYS_MS },
+    );
+    autosaver.current = saver;
+    return () => saver.dispose();
+  }, [attemptId]);
 
-    const timer = setTimeout(async () => {
-      // Invalid input (e.g. too long) stays local; the form already shows the error.
-      const parsed = attemptAnswersSchema.safeParse(JSON.parse(serialized));
-      if (!parsed.success) return;
+  useEffect(() => {
+    if (serialized === lastScheduled.current) return;
+    lastScheduled.current = serialized;
 
-      setStatus('saving');
-      try {
-        await saveDraft(attemptId, parsed.data);
-        lastSaved.current = serialized;
-        setStatus('saved');
-      } catch {
-        setStatus('error');
-      }
-    }, AUTOSAVE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [attemptId, serialized]);
+    // Invalid input (e.g. too long) stays local; the form already shows the error.
+    const parsed = attemptAnswersSchema.safeParse(JSON.parse(serialized));
+    if (parsed.success) autosaver.current?.schedule(parsed.data);
+  }, [serialized]);
 
   return status;
 };

@@ -7,7 +7,10 @@ import AnswerForm from './AnswerForm';
 
 vi.mock('../../api', () => ({ saveDraft: vi.fn(), submitAttempt: vi.fn() }));
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(saveDraft).mockResolvedValue();
+});
 
 const setup = () => {
   const user = userEvent.setup();

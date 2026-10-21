@@ -33,8 +33,6 @@ const attemptRowSchema = z.object({
     statement: z.string(),
     origin: z.enum(['oab', 'autoral']),
     exam_edition: z.string().nullable(),
-    // Null until the attempt is submitted: RLS hides the answer key before that.
-    answer_key: answerKeySchema.nullable(),
   }),
 });
 
@@ -66,12 +64,14 @@ const ATTEMPT_COLUMNS = `
   id, time_limit_minutes, started_at, submitted_at,
   identified_piece, addressing, qualification, grounds, requests, closing,
   case_study:case_studies (
-    id, trail_id, title, statement, origin, exam_edition,
-    answer_key:case_study_answer_keys (piece, addressing, qualification, grounds, requests, closing)
+    id, trail_id, title, statement, origin, exam_edition
   )
 `;
 
-const toAttempt = (row: z.infer<typeof attemptRowSchema>): Attempt => ({
+const toAttempt = (
+  row: z.infer<typeof attemptRowSchema>,
+  answerKey: AnswerKey | null,
+): Attempt => ({
   id: row.id,
   caseStudy: {
     id: row.case_study.id,
@@ -81,7 +81,7 @@ const toAttempt = (row: z.infer<typeof attemptRowSchema>): Attempt => ({
     origin: row.case_study.origin,
     examEdition: row.case_study.exam_edition,
   },
-  answerKey: row.case_study.answer_key,
+  answerKey,
   timeLimitMinutes: row.time_limit_minutes,
   startedAt: new Date(row.started_at),
   submittedAt: row.submitted_at ? new Date(row.submitted_at) : null,
@@ -121,7 +121,19 @@ export const fetchAttempt = async (attemptId: string): Promise<Attempt | null> =
     .eq('id', attemptId)
     .maybeSingle();
   if (error) throw error;
-  return data ? toAttempt(attemptRowSchema.parse(data)) : null;
+  if (!data) return null;
+
+  const row = attemptRowSchema.parse(data);
+  return toAttempt(row, row.submitted_at ? await fetchAnswerKey(attemptId) : null);
+};
+
+/** Unlocked per attempt: only once that attempt is submitted (the database enforces it). */
+const fetchAnswerKey = async (attemptId: string): Promise<AnswerKey | null> => {
+  const { data, error } = await supabase
+    .rpc('get_case_answer_key', { p_attempt_id: attemptId })
+    .maybeSingle();
+  if (error) throw error;
+  return data ? answerKeySchema.parse(data) : null;
 };
 
 /** Starts (or resumes) an attempt in the trail. Null when the trail has no cases yet. */
@@ -153,7 +165,14 @@ export const submitAttempt = async (attemptId: string, answers: AttemptAnswers) 
   if (error) throw error;
 };
 
-export const discardAttempt = async (attemptId: string) => {
-  const { error } = await supabase.rpc('discard_case_attempt', { p_attempt_id: attemptId });
+/**
+ * Discards the unfinished attempt and starts another in the same trail, in one
+ * transaction: if that fails, the current attempt is kept. Returns the new id.
+ */
+export const restartAttempt = async (attemptId: string): Promise<string> => {
+  const { data, error } = await supabase.rpc('restart_case_attempt', {
+    p_attempt_id: attemptId,
+  });
   if (error) throw error;
+  return z.string().parse(data);
 };
