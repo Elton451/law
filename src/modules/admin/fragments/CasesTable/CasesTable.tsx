@@ -2,7 +2,7 @@ import { Button, Table, Tag, Tooltip, type TableProps } from 'antd';
 import { Link, useLocation } from 'react-router';
 import { originLabel } from '@shared/case-studies/origin';
 import { paths } from '@shared/routes';
-import type { CaseSummary } from '../../api';
+import type { CaseSummary } from '../../api/cases';
 import { Actions, CaseTitle } from './styles';
 
 type CasesTableProps = {

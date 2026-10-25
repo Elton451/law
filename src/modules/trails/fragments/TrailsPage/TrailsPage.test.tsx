@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { signOut } from '@shared/auth/authService';
 import { render, screen, within } from '@shared/test/test-utils';
-import { fetchTrails, type Trail } from '../../api';
+import { fetchTrails, type Trail } from '../../api/trails';
 import TrailsPage from './TrailsPage';
 
-vi.mock('../../api', () => ({ fetchTrails: vi.fn() }));
+vi.mock('../../api/trails', () => ({ fetchTrails: vi.fn() }));
 vi.mock('@shared/auth/authService', () => ({ signOut: vi.fn() }));
 
 const trails: Trail[] = [

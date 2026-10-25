@@ -1,4 +1,4 @@
-import type { AutosaveStatus } from '../../hooks';
+import type { AutosaveStatus } from '../../utils/autosave';
 import { Status } from './styles';
 
 const messages: Record<AutosaveStatus, string> = {

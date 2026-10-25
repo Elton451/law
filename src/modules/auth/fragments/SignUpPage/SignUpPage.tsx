@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { paths } from '@shared/routes';
-import { signUp } from '../../api';
-import type { SignUpValues } from '../../schemas';
+import { signUp } from '../../api/auth';
+import type { SignUpValues } from '../../schemas/auth';
 import AuthLayout from '../AuthLayout/AuthLayout';
 import ConfirmEmailNotice from '../ConfirmEmailNotice/ConfirmEmailNotice';
 import SignUpForm from '../SignUpForm/SignUpForm';

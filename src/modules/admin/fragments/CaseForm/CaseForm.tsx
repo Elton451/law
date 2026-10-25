@@ -3,9 +3,9 @@ import { Alert, Button, Form, Input, Radio, Select, Switch } from 'antd';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { pieceSections } from '@shared/case-studies/sections';
-import { CaseHasAttemptsError, type Trail } from '../../api';
-import { caseFormSchema, type CaseFormValues } from '../../schemas';
+import { pieceSections } from '@shared/case-studies/constants/pieceSections';
+import { CaseHasAttemptsError, type Trail } from '../../api/cases';
+import { caseFormSchema, type CaseFormValues } from '../../schemas/caseForm';
 import FormField from '../FormField/FormField';
 import { Actions, Section } from './styles';
 

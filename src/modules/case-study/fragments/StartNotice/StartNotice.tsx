@@ -1,6 +1,6 @@
 import { Button, Modal } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
-import { formatTimeLimit } from '../../timer';
+import { formatTimeLimit } from '../../utils/timer';
 
 const isJustStarted = (state: unknown) =>
   !!state && typeof state === 'object' && 'justStarted' in state && state.justStarted === true;

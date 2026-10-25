@@ -1,8 +1,8 @@
 import { Alert, Button, Popover } from 'antd';
 import { FaCircleInfo } from 'react-icons/fa6';
-import type { Trail } from '../../api';
-import { useStartAttempt } from '../../hooks';
-import { DEFAULT_TIME_LIMIT_MINUTES } from '../../timer';
+import type { Trail } from '../../api/caseStudy';
+import { useStartAttempt } from '../../hooks/useStartAttempt';
+import { DEFAULT_TIME_LIMIT_MINUTES } from '../../constants/timer';
 import OptionCard from '../OptionCard/OptionCard';
 import TrainingRules from '../TrainingRules/TrainingRules';
 

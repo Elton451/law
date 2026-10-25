@@ -2,10 +2,14 @@ import { Alert, Button, Modal, Tag } from 'antd';
 import { useState } from 'react';
 import BackLink from '@shared/components/BackLink/BackLink';
 import { paths } from '@shared/routes';
-import { caseEditedSinceSubmission, type AnswerKey, type SubmittedAttempt } from '../../api';
-import { useStartAttempt } from '../../hooks';
-import { answerFields } from '../../sections';
-import { attemptDuration, formatTimeLimit } from '../../timer';
+import {
+  caseEditedSinceSubmission,
+  type AnswerKey,
+  type SubmittedAttempt,
+} from '../../api/caseStudy';
+import { useStartAttempt } from '../../hooks/useStartAttempt';
+import { answerFields } from '../../constants/answerFields';
+import { attemptDuration, formatTimeLimit } from '../../utils/timer';
 import CaseStatement from '../CaseStatement/CaseStatement';
 import ComparisonRow from '../ComparisonRow/ComparisonRow';
 import { Actions, Summary, Title } from './styles';

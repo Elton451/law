@@ -1,8 +1,8 @@
 import { Progress } from 'antd';
 import { paths } from '@shared/routes';
 import { colors, trailColors } from '@shared/theme/tokens';
-import type { Trail } from '../../api';
-import { progressPercent } from '../../progress';
+import type { Trail } from '../../api/trails';
+import { progressPercent } from '../../utils/progress';
 import { CardLink, Name, ProgressLabel, YarnIcon } from './styles';
 
 const TrailCard = ({ trail }: { trail: Trail }) => {

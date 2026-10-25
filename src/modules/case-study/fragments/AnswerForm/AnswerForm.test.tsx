@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor, within } from '@shared/test/test-utils';
-import { saveDraft, submitAttempt } from '../../api';
-import { makeAttempt } from '../../testData';
+import { saveDraft, submitAttempt } from '../../api/caseStudy';
+import { makeAttempt } from '../../test/makeAttempt';
 import AnswerForm from './AnswerForm';
 
-vi.mock('../../api', () => ({ saveDraft: vi.fn(), submitAttempt: vi.fn() }));
+vi.mock('../../api/caseStudy', () => ({ saveDraft: vi.fn(), submitAttempt: vi.fn() }));
 
 beforeEach(() => {
   vi.clearAllMocks();

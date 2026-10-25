@@ -1,0 +1,2 @@
+export const AUTOSAVE_DELAY_MS = 1500;
+export const AUTOSAVE_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000];

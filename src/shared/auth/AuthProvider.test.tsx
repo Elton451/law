@@ -6,9 +6,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@shared/test/test-utils';
 import { AuthProvider } from './AuthProvider';
 import { fetchProfile } from './authService';
-import RequireAuth from './RequireAuth';
+import RequireAuth from './components/RequireAuth';
 import type { Profile } from './types';
-import { useAuth } from './useAuth';
+import { useAuth } from './hooks/useAuth';
 
 type Listener = (event: AuthChangeEvent, session: Session | null) => void;
 

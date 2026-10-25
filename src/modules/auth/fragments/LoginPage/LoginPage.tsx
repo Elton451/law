@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { paths } from '@shared/routes';
-import { signIn } from '../../api';
+import { signIn } from '../../api/auth';
 import AuthLayout from '../AuthLayout/AuthLayout';
 import LoginForm from '../LoginForm/LoginForm';
 

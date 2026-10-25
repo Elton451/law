@@ -1,7 +1,7 @@
 import { Form, Input } from 'antd';
 import { useId } from 'react';
 import { useController, type Control } from 'react-hook-form';
-import type { AttemptAnswers } from '../../schemas';
+import type { AttemptAnswers } from '../../schemas/answers';
 
 type AnswerFieldProps = {
   control: Control<AttemptAnswers>;

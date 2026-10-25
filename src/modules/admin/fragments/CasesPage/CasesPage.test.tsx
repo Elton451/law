@@ -2,11 +2,17 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@shared/test/test-utils';
-import { deleteCase, fetchCases, fetchTrails, setCaseActive, type CaseSummary } from '../../api';
+import {
+  deleteCase,
+  fetchCases,
+  fetchTrails,
+  setCaseActive,
+  type CaseSummary,
+} from '../../api/cases';
 import CasesPage from './CasesPage';
 
-vi.mock('../../api', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../../api')>()),
+vi.mock('../../api/cases', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/cases')>()),
   fetchTrails: vi.fn(),
   fetchCases: vi.fn(),
   setCaseActive: vi.fn(),

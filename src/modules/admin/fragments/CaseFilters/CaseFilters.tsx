@@ -1,6 +1,6 @@
 import { Select } from 'antd';
 import type { CaseOrigin } from '@shared/case-studies/origin';
-import type { CaseFilters as Filters, Trail } from '../../api';
+import type { CaseFilters as Filters, Trail } from '../../api/cases';
 import { Wrapper } from './styles';
 
 const originOptions: { value: CaseOrigin; label: string }[] = [

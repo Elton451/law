@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button, Form } from 'antd';
 import { useForm } from 'react-hook-form';
-import { loginSchema, type FormError, type LoginValues } from '../../schemas';
+import { loginSchema, type FormError, type LoginValues } from '../../schemas/auth';
 import TextField from '../TextField/TextField';
 
 type LoginFormProps = {

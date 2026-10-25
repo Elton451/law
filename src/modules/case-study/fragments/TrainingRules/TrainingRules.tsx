@@ -1,4 +1,4 @@
-import { formatTimeLimit } from '../../timer';
+import { formatTimeLimit } from '../../utils/timer';
 import { List } from './styles';
 
 const TrainingRules = ({ timeLimitMinutes }: { timeLimitMinutes: number }) => (

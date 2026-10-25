@@ -9,6 +9,29 @@ A **module** is a self-contained feature area under `src/modules/<name>/`. Today
 - **Modules never import from each other.** `src/modules/flashcards/**` must not import anything from `src/modules/home/**` or `src/modules/student-summaries/**`, and vice versa. Modules may only import from their own files and from `src/shared/**`. This is enforced by `.dependency-cruiser.cjs` and blocks commits (`npm run depcruise`).
 - New features start as a new folder under `src/modules/`, following the same `index.tsx` + `fragments/` shape.
 
+### Folder layout inside a module (and inside a `shared/` feature)
+
+Besides `index.tsx` and `fragments/`, a module groups its non-component code into folders by kind. Create a folder only when there's something to put in it:
+
+```
+src/modules/<name>/
+  index.tsx        ← public API
+  fragments/       ← components (one folder per component: X.tsx + styles.tsx + X.test.tsx)
+  api/             ← Supabase calls and the row→domain mapping (e.g. api/cases.ts)
+  hooks/           ← one hook per file, named after it (hooks/useCaseFilters.ts)
+  schemas/         ← zod schemas + their inferred types (schemas/caseForm.ts)
+  constants/       ← plain values and config (constants/timer.ts, constants/answerFields.ts)
+  utils/           ← pure functions, no React (utils/timer.ts, utils/progress.ts)
+  types/           ← shared TS types that don't belong to an api/schema file
+  test/            ← test-only helpers and fixtures (test/makeAttempt.ts)
+```
+
+- Name files after what they hold, not after the folder: `hooks/useTrail.ts`, not `hooks/hooks.ts`. No barrel `index.ts` inside these folders — import the file directly (`../../hooks/useTrail`).
+- A hook used by only one fragment still goes in `hooks/` (e.g. `admin/hooks/useCaseActions.tsx`), keeping fragments to rendering.
+- Tests stay colocated with what they test (`utils/timer.test.ts`, `hooks/useDraftAutosave.test.ts`).
+- The same layout applies to feature folders in `src/shared/` (e.g. `shared/auth/{components,hooks,utils}/`, `shared/case-studies/constants/`). The feature's core files (context, provider, service, `types.ts`) can stay at its root. Cross-feature shared code keeps its top-level folders: `shared/components`, `shared/hooks`, `shared/utils`, `shared/lib`.
+- These folders are private to the module like everything else — the "only import `index.tsx`" rule still holds.
+
 ## Creating a new page
 
 1. Decide which module it belongs to. If it's a variant or section of an existing module's feature, add it as a fragment under that module's `fragments/`. If it's a genuinely new feature area, create a new module folder (`index.tsx` + `fragments/`).
@@ -18,7 +41,7 @@ A **module** is a self-contained feature area under `src/modules/<name>/`. Today
 ## Backend, auth and routing
 
 - The backend is Supabase. The single client lives in `src/shared/lib/supabase.ts` and reads `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` (copy `.env.example` to `.env.local`). Schema changes go in `supabase/migrations/`.
-- Session state is shared, not owned by a module: `AuthProvider` + `useAuth` in `src/shared/auth/`. Guard routes with `RequireAuth` (optionally `role="admin"`) and guest-only pages with `RedirectIfAuthenticated`.
+- Session state is shared, not owned by a module: `AuthProvider` in `src/shared/auth/` and `useAuth` in `src/shared/auth/hooks/`. Guard routes with `RequireAuth` (optionally `role="admin"`) and guest-only pages with `RedirectIfAuthenticated`, both in `src/shared/auth/components/`.
 - User roles live in `public.profiles.role`, never in user metadata (the client controls metadata). Permission checks must also be enforced by RLS, not only by route guards.
 - Routes are declared in `src/App.tsx`; path constants are in `src/shared/routes.ts`.
 - Load data with `useAsync` from `src/shared/hooks/useAsync.ts` (pass a stable function: module-level or `useCallback`). Writes that must be trusted (timers, submissions) go through `security definer` SQL functions, not direct table writes.

@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@shared/test/test-utils';
-import { restartAttempt, saveDraft } from '../../api';
-import { makeAttempt } from '../../testData';
+import { restartAttempt, saveDraft } from '../../api/caseStudy';
+import { makeAttempt } from '../../test/makeAttempt';
 import ResolutionView from './ResolutionView';
 
-vi.mock('../../api', () => ({
+vi.mock('../../api/caseStudy', () => ({
   restartAttempt: vi.fn(),
   saveDraft: vi.fn(),
   submitAttempt: vi.fn(),

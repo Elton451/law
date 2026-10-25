@@ -6,7 +6,7 @@ import {
   type ControllerRenderProps,
   type FieldPath,
 } from 'react-hook-form';
-import type { CaseFormValues } from '../../schemas';
+import type { CaseFormValues } from '../../schemas/caseForm';
 
 type FormFieldProps<Name extends FieldPath<CaseFormValues>> = {
   control: Control<CaseFormValues>;

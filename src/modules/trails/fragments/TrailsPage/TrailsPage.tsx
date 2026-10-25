@@ -1,6 +1,6 @@
 import { Button, Result, Skeleton } from 'antd';
 import AppShell from '@shared/components/AppShell/AppShell';
-import { useTrails } from '../../useTrails';
+import { useTrails } from '../../hooks/useTrails';
 import TrailCard from '../TrailCard/TrailCard';
 import { Grid, Subtitle, Title } from './styles';
 

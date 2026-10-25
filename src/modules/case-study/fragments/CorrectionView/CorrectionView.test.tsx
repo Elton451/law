@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@shared/test/test-utils';
-import type { SubmittedAttempt } from '../../api';
-import { emptyAnswers } from '../../schemas';
-import { makeAttempt } from '../../testData';
+import type { SubmittedAttempt } from '../../api/caseStudy';
+import { emptyAnswers } from '../../schemas/answers';
+import { makeAttempt } from '../../test/makeAttempt';
 import CorrectionView from './CorrectionView';
 
-vi.mock('../../api', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../../api')>()),
+vi.mock('../../api/caseStudy', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/caseStudy')>()),
   startAttempt: vi.fn(),
 }));
 

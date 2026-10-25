@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router';
 import AppShell from '@shared/components/AppShell/AppShell';
 import FullPageSpinner from '@shared/components/FullPageSpinner/FullPageSpinner';
 import { paths } from '@shared/routes';
-import { isSubmitted } from '../../api';
-import { useAttempt } from '../../hooks';
+import { isSubmitted } from '../../api/caseStudy';
+import { useAttempt } from '../../hooks/useAttempt';
 import CorrectionView from '../CorrectionView/CorrectionView';
 import ResolutionView from '../ResolutionView/ResolutionView';
 

@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@shared/test/test-utils';
-import { fetchTrail, startAttempt } from '../../api';
+import { fetchTrail, startAttempt } from '../../api/caseStudy';
 import CaseStudyAreaPage from './CaseStudyAreaPage';
 
-vi.mock('../../api', () => ({ fetchTrail: vi.fn(), startAttempt: vi.fn() }));
+vi.mock('../../api/caseStudy', () => ({ fetchTrail: vi.fn(), startAttempt: vi.fn() }));
 vi.mock('@shared/auth/authService', () => ({ signOut: vi.fn() }));
 
 const renderPage = () =>

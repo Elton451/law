@@ -1,5 +1,5 @@
 import { colors, trailColors } from '@shared/theme/tokens';
-import type { Trail } from '../../api';
+import type { Trail } from '../../api/caseStudy';
 import { Eyebrow, Name, Wrapper, YarnIcon } from './styles';
 
 const TrailHeader = ({ trail, eyebrow }: { trail: Trail; eyebrow: string }) => (
