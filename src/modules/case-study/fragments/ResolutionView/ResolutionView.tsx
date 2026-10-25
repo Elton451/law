@@ -1,10 +1,10 @@
 import { Alert } from 'antd';
 import { useState } from 'react';
+import BackLink from '@shared/components/BackLink/BackLink';
 import { paths } from '@shared/routes';
 import type { Attempt } from '../../api';
 import { useCountdown, useRestartAttempt } from '../../hooks';
 import AnswerForm from '../AnswerForm/AnswerForm';
-import BackLink from '../BackLink/BackLink';
 import CaseStatement from '../CaseStatement/CaseStatement';
 import StartNotice from '../StartNotice/StartNotice';
 import TimerBadge from '../TimerBadge/TimerBadge';

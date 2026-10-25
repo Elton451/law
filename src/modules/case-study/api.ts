@@ -33,6 +33,7 @@ const attemptRowSchema = z.object({
     statement: z.string(),
     origin: z.enum(['oab', 'autoral']),
     exam_edition: z.string().nullable(),
+    content_updated_at: z.string(),
   }),
 });
 
@@ -43,6 +44,8 @@ export type CaseStudy = {
   statement: string;
   origin: 'oab' | 'autoral';
   examEdition: string | null;
+  /** When the statement or answer key last changed (US-024). */
+  contentUpdatedAt: Date;
 };
 
 export type Attempt = {
@@ -60,11 +63,15 @@ export type SubmittedAttempt = Attempt & { submittedAt: Date };
 export const isSubmitted = (attempt: Attempt): attempt is SubmittedAttempt =>
   attempt.submittedAt !== null;
 
+/** The admin changed the case after this answer was sent: the correction may not match it. */
+export const caseEditedSinceSubmission = (attempt: SubmittedAttempt) =>
+  attempt.caseStudy.contentUpdatedAt > attempt.submittedAt;
+
 const ATTEMPT_COLUMNS = `
   id, time_limit_minutes, started_at, submitted_at,
   identified_piece, addressing, qualification, grounds, requests, closing,
   case_study:case_studies (
-    id, trail_id, title, statement, origin, exam_edition
+    id, trail_id, title, statement, origin, exam_edition, content_updated_at
   )
 `;
 
@@ -80,6 +87,7 @@ const toAttempt = (
     statement: row.case_study.statement,
     origin: row.case_study.origin,
     examEdition: row.case_study.exam_edition,
+    contentUpdatedAt: new Date(row.case_study.content_updated_at),
   },
   answerKey,
   timeLimitMinutes: row.time_limit_minutes,

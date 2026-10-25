@@ -1,11 +1,11 @@
 import { Alert, Button, Modal, Tag } from 'antd';
 import { useState } from 'react';
+import BackLink from '@shared/components/BackLink/BackLink';
 import { paths } from '@shared/routes';
-import type { AnswerKey, SubmittedAttempt } from '../../api';
+import { caseEditedSinceSubmission, type AnswerKey, type SubmittedAttempt } from '../../api';
 import { useStartAttempt } from '../../hooks';
 import { answerFields } from '../../sections';
 import { attemptDuration, formatTimeLimit } from '../../timer';
-import BackLink from '../BackLink/BackLink';
 import CaseStatement from '../CaseStatement/CaseStatement';
 import ComparisonRow from '../ComparisonRow/ComparisonRow';
 import { Actions, Summary, Title } from './styles';
@@ -50,6 +50,14 @@ const CorrectionView = ({ attempt, trailSlug }: CorrectionViewProps) => {
           Gerar outro teste
         </Button>
       </Actions>
+      {caseEditedSinceSubmission(attempt) && (
+        <Alert
+          type="warning"
+          showIcon
+          title="Este caso foi editado depois que você enviou sua resposta."
+          description="O enunciado e o gabarito abaixo são a versão atual e podem não corresponder ao caso que você resolveu."
+        />
+      )}
       {startState === 'error' && (
         <Alert
           type="error"

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { originLabel } from './origin';
+import { originLabel } from '@shared/case-studies/origin';
 import { attemptAnswersSchema, blankFieldLabels, emptyAnswers } from './schemas';
 
 describe('attemptAnswersSchema', () => {

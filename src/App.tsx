@@ -1,6 +1,6 @@
 import { ConfigProvider } from 'antd';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import Admin from '@modules/admin';
+import { AdminCaseFormPage, AdminCasesPage } from '@modules/admin';
 import { LoginPage, SignUpPage } from '@modules/auth';
 import { AttemptPage, CaseStudyAreaPage } from '@modules/case-study';
 import Home from '@modules/home';
@@ -68,11 +68,29 @@ function App() {
                 </RequireAuth>
               }
             />
+            {/* Casos concretos is the only admin area so far (US-024). */}
+            <Route path={paths.admin} element={<Navigate to={paths.adminCases} replace />} />
             <Route
-              path={paths.admin}
+              path={paths.adminCases}
               element={
                 <RequireAuth role="admin">
-                  <Admin />
+                  <AdminCasesPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.adminNewCase}
+              element={
+                <RequireAuth role="admin">
+                  <AdminCaseFormPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.adminCase(':caseId')}
+              element={
+                <RequireAuth role="admin">
+                  <AdminCaseFormPage />
                 </RequireAuth>
               }
             />

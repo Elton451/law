@@ -1,6 +1,6 @@
 import { Tag } from 'antd';
+import { originLabel } from '@shared/case-studies/origin';
 import type { CaseStudy } from '../../api';
-import { originLabel } from '../../origin';
 import { Statement, Title, Wrapper } from './styles';
 
 const CaseStatement = ({ caseStudy }: { caseStudy: CaseStudy }) => (

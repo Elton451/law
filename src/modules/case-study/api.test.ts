@@ -29,6 +29,7 @@ const row = {
     statement: 'Enunciado',
     origin: 'oab',
     exam_edition: 'XXXV Exame',
+    content_updated_at: '2026-10-01T12:00:00Z',
   },
 };
 

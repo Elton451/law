@@ -6,7 +6,10 @@ import { emptyAnswers } from '../../schemas';
 import { makeAttempt } from '../../testData';
 import CorrectionView from './CorrectionView';
 
-vi.mock('../../api', () => ({ startAttempt: vi.fn() }));
+vi.mock('../../api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api')>()),
+  startAttempt: vi.fn(),
+}));
 
 const startedAt = new Date('2026-10-06T12:00:00Z');
 
@@ -54,5 +57,20 @@ describe('CorrectionView', () => {
     await user.click(screen.getByRole('button', { name: 'Rever caso concreto' }));
 
     expect(await screen.findByRole('dialog')).toHaveTextContent('João é proprietário');
+  });
+
+  it('warns when the case was edited after the answer was sent', () => {
+    const attempt = submitted(45);
+    attempt.caseStudy.contentUpdatedAt = new Date(attempt.submittedAt.getTime() + 1000);
+    render(<CorrectionView attempt={attempt} trailSlug="civil" />);
+
+    expect(
+      screen.getByText('Este caso foi editado depois que você enviou sua resposta.'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not warn when the case is unchanged since the answer was sent', () => {
+    render(<CorrectionView attempt={submitted(45)} trailSlug="civil" />);
+    expect(screen.queryByText(/foi editado depois/)).not.toBeInTheDocument();
   });
 });

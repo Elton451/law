@@ -10,4 +10,7 @@ export const paths = {
   profile: '/perfil',
   settings: '/configuracoes',
   admin: '/admin',
+  adminCases: '/admin/casos',
+  adminNewCase: '/admin/casos/novo',
+  adminCase: (id: string) => `/admin/casos/${id}`,
 } as const;

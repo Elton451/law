@@ -1,9 +1,9 @@
 import { Button, Result, Skeleton, Tag } from 'antd';
 import { useParams } from 'react-router';
 import AppShell from '@shared/components/AppShell/AppShell';
+import BackLink from '@shared/components/BackLink/BackLink';
 import { paths } from '@shared/routes';
 import { useTrail } from '../../hooks';
-import BackLink from '../BackLink/BackLink';
 import OptionCard from '../OptionCard/OptionCard';
 import TrailHeader from '../TrailHeader/TrailHeader';
 import TrainingCard from '../TrainingCard/TrainingCard';
