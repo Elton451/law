@@ -121,3 +121,90 @@ select pg_temp.seed_case(
   $$a) recebimento dos embargos com efeito suspensivo; b) intimação do embargado para impugnar; c) procedência para reconhecer a extinção do crédito pelo pagamento e extinguir a execução; d) levantamento da penhora; e) condenação em honorários; f) provas, especialmente o comprovante de pagamento.$$,
   $$Valor da causa: R$ ___ (valor da execução). Nestes termos, pede deferimento. Local, data. Advogado, OAB nº ___.$$
 );
+
+-- Módulos, lições e flashcards de EXEMPLO (US-009, US-010), com as mesmas
+-- ressalvas acima: conteúdo simplificado, a revisar antes de uso real. O
+-- conteúdo de produção virá do painel admin (US-021, US-023). Idempotente:
+-- lições com o mesmo título na mesma trilha não são duplicadas.
+
+create or replace function pg_temp.seed_flashcard_lesson(
+  p_trail_slug text,
+  p_module_title text,
+  p_module_position integer,
+  p_lesson_title text,
+  p_lesson_position integer,
+  p_cards text[][] -- array[array[frente, verso], ...]
+) returns void
+language plpgsql
+as $$
+declare
+  v_trail uuid := (select id from public.trails where slug = p_trail_slug);
+  v_module uuid;
+  v_lesson uuid;
+begin
+  select id into v_module
+  from public.modules
+  where trail_id = v_trail and title = p_module_title and deleted_at is null;
+
+  if v_module is null then
+    insert into public.modules (trail_id, title, position)
+    values (v_trail, p_module_title, p_module_position)
+    returning id into v_module;
+  end if;
+
+  if exists (
+    select 1 from public.lessons
+    where module_id = v_module and title = p_lesson_title and deleted_at is null
+  ) then
+    return;
+  end if;
+
+  insert into public.lessons (module_id, title, position)
+  values (v_module, p_lesson_title, p_lesson_position)
+  returning id into v_lesson;
+
+  for i in 1 .. array_length(p_cards, 1) loop
+    insert into public.flashcards (lesson_id, front, back, position)
+    values (v_lesson, p_cards[i][1], p_cards[i][2], i);
+  end loop;
+end;
+$$;
+
+select pg_temp.seed_flashcard_lesson(
+  'constitucional', '[Exemplo] Direitos fundamentais', 1, 'Remédios constitucionais', 1,
+  array[
+    array['Qual remédio protege a liberdade de locomoção?', 'Habeas corpus (art. 5º, LXVIII, CF).'],
+    array['Qual remédio garante o acesso a informações pessoais em bancos de dados públicos?', 'Habeas data (art. 5º, LXXII, CF).'],
+    array['Quando cabe mandado de segurança?', 'Para proteger direito líquido e certo não amparado por habeas corpus ou habeas data, contra ato de autoridade (art. 5º, LXIX, CF).'],
+    array['Quando cabe mandado de injunção?', 'Quando a falta de norma regulamentadora torna inviável o exercício de direitos e liberdades constitucionais (art. 5º, LXXI, CF).'],
+    array['Quem pode propor ação popular?', 'Qualquer cidadão (art. 5º, LXXIII, CF).']
+  ]
+);
+
+select pg_temp.seed_flashcard_lesson(
+  'constitucional', '[Exemplo] Direitos fundamentais', 1, 'Nacionalidade', 2,
+  array[
+    array['Quais critérios definem o brasileiro nato?', 'Ius soli (nascidos no Brasil) e ius sanguinis com requisitos (art. 12, I, CF).'],
+    array['Cite um cargo privativo de brasileiro nato.', 'Presidente da República, entre outros do art. 12, § 3º, CF.'],
+    array['O brasileiro nato pode ser extraditado?', 'Não. Só o naturalizado, por crime comum anterior à naturalização ou tráfico de drogas (art. 5º, LI, CF).']
+  ]
+);
+
+select pg_temp.seed_flashcard_lesson(
+  'civil', '[Exemplo] Parte geral', 1, 'Prescrição e decadência', 1,
+  array[
+    array['Qual é o prazo prescricional geral do Código Civil?', '10 anos, quando a lei não fixar prazo menor (art. 205, CC).'],
+    array['Qual é o prazo da pretensão de reparação civil?', '3 anos (art. 206, § 3º, V, CC).'],
+    array['A prescrição corre entre cônjuges na constância da sociedade conjugal?', 'Não (art. 197, I, CC).'],
+    array['O juiz pode reconhecer a decadência legal de ofício?', 'Sim (art. 210, CC).']
+  ]
+);
+
+select pg_temp.seed_flashcard_lesson(
+  'penal', '[Exemplo] Teoria do crime', 1, 'Excludentes de ilicitude', 1,
+  array[
+    array['Quais são as excludentes de ilicitude do art. 23 do CP?', 'Estado de necessidade, legítima defesa, estrito cumprimento de dever legal e exercício regular de direito.'],
+    array['O que é legítima defesa?', 'Repelir injusta agressão, atual ou iminente, a direito seu ou de outrem, usando moderadamente os meios necessários (art. 25, CP).'],
+    array['O agente responde pelo excesso nas excludentes?', 'Sim, pelo excesso doloso ou culposo (art. 23, parágrafo único, CP).']
+  ]
+);

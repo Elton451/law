@@ -1,6 +1,6 @@
 import { Grid, type MenuProps } from 'antd';
 import { useState, type ReactNode } from 'react';
-import { FaGear, FaRightFromBracket, FaRoute, FaUser } from 'react-icons/fa6';
+import { FaGear, FaLayerGroup, FaRightFromBracket, FaRoute, FaUser } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router';
 import { signOut } from '@shared/auth/authService';
 import Logo from '@shared/components/Logo/Logo';
@@ -13,6 +13,7 @@ type MenuItems = NonNullable<MenuProps['items']>;
 
 const studentMenuItems: MenuItems = [
   { key: paths.trails, icon: <FaRoute />, label: 'Trilhas' },
+  { key: paths.review, icon: <FaLayerGroup />, label: 'Revisão' },
   // Enabled as US-013 (perfil) and US-014 (configurações) land.
   { key: paths.profile, icon: <FaUser />, label: 'Perfil', disabled: true },
   { key: paths.settings, icon: <FaGear />, label: 'Configurações', disabled: true },

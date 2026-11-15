@@ -1,6 +1,7 @@
 import { Button } from 'antd';
 import { FaPlus } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router';
+import LoadError from '@shared/components/LoadError/LoadError';
 import { paths } from '@shared/routes';
 import { useCaseFilters } from '../../hooks/useCaseFilters';
 import { useCases } from '../../hooks/useCases';
@@ -8,7 +9,6 @@ import { useTrails } from '../../hooks/useTrails';
 import AdminShell from '../AdminShell/AdminShell';
 import CaseFilters from '../CaseFilters/CaseFilters';
 import CasesTable from '../CasesTable/CasesTable';
-import LoadError from '../LoadError/LoadError';
 import PageHeader from '../PageHeader/PageHeader';
 import { useCaseActions } from '../../hooks/useCaseActions';
 

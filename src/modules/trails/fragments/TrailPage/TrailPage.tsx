@@ -12,8 +12,11 @@ const TrailPage = () => {
     <AppShell>
       <Result
         title="Em breve"
-        subTitle="Os módulos e lições desta matéria ainda estão sendo preparados. O estudo de caso já está disponível."
+        subTitle="Os módulos e lições desta matéria ainda estão sendo preparados. Os flashcards e o estudo de caso já estão disponíveis."
         extra={[
+          <Button key="flashcards" type="primary" onClick={() => navigate(paths.flashcards(slug))}>
+            Flashcards
+          </Button>,
           <Button key="case" type="primary" onClick={() => navigate(paths.caseStudy(slug))}>
             Estudo de caso
           </Button>,

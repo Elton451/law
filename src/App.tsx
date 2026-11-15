@@ -1,8 +1,19 @@
 import { ConfigProvider } from 'antd';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import { AdminCaseFormPage, AdminCasesPage } from '@modules/admin';
+import {
+  AdminCaseFormPage,
+  AdminCasesPage,
+  AdminFlashcardLessonsPage,
+  AdminLessonFlashcardsPage,
+} from '@modules/admin';
 import { LoginPage, SignUpPage } from '@modules/auth';
 import { AttemptPage, CaseStudyAreaPage } from '@modules/case-study';
+import {
+  FlashcardsAreaPage,
+  LessonSessionPage,
+  ReviewPage,
+  ReviewSessionPage,
+} from '@modules/flashcards';
 import Home from '@modules/home';
 import { TrailPage, TrailsPage } from '@modules/trails';
 import { AuthProvider } from '@shared/auth/AuthProvider';
@@ -68,7 +79,47 @@ function App() {
                 </RequireAuth>
               }
             />
-            {/* Casos concretos is the only admin area so far (US-024). */}
+            <Route
+              path={paths.flashcards(':slug')}
+              element={
+                <RequireAuth>
+                  <FlashcardsAreaPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.lessonFlashcards(':slug', ':lessonId')}
+              element={
+                <RequireAuth>
+                  <LessonSessionPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.trailReview(':slug')}
+              element={
+                <RequireAuth>
+                  <ReviewSessionPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.review}
+              element={
+                <RequireAuth>
+                  <ReviewPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.reviewSession}
+              element={
+                <RequireAuth>
+                  <ReviewSessionPage />
+                </RequireAuth>
+              }
+            />
+            {/* Casos concretos is the admin's landing area (US-024). */}
             <Route path={paths.admin} element={<Navigate to={paths.adminCases} replace />} />
             <Route
               path={paths.adminCases}
@@ -91,6 +142,22 @@ function App() {
               element={
                 <RequireAuth role="admin">
                   <AdminCaseFormPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.adminFlashcards}
+              element={
+                <RequireAuth role="admin">
+                  <AdminFlashcardLessonsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.adminLessonFlashcards(':lessonId')}
+              element={
+                <RequireAuth role="admin">
+                  <AdminLessonFlashcardsPage />
                 </RequireAuth>
               }
             />

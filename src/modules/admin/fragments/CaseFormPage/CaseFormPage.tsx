@@ -1,6 +1,7 @@
 import { Result, Skeleton } from 'antd';
 import { useNavigate, useParams } from 'react-router';
 import BackLink from '@shared/components/BackLink/BackLink';
+import LoadError from '@shared/components/LoadError/LoadError';
 import { saveCase, type CaseDetail, type Trail } from '../../api/cases';
 import { useCase } from '../../hooks/useCase';
 import { useListPath } from '../../hooks/useListPath';
@@ -8,7 +9,6 @@ import { useTrails } from '../../hooks/useTrails';
 import { emptyCaseForm, type CaseFormValues } from '../../schemas/caseForm';
 import AdminShell from '../AdminShell/AdminShell';
 import CaseForm from '../CaseForm/CaseForm';
-import LoadError from '../LoadError/LoadError';
 import PageHeader from '../PageHeader/PageHeader';
 
 type EditorProps = { trails: Trail[]; caseStudy: CaseDetail | null };

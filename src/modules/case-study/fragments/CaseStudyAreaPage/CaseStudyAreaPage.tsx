@@ -2,10 +2,10 @@ import { Button, Result, Skeleton, Tag } from 'antd';
 import { useParams } from 'react-router';
 import AppShell from '@shared/components/AppShell/AppShell';
 import BackLink from '@shared/components/BackLink/BackLink';
+import TrailHeader from '@shared/components/TrailHeader/TrailHeader';
 import { paths } from '@shared/routes';
 import { useTrail } from '../../hooks/useTrail';
 import OptionCard from '../OptionCard/OptionCard';
-import TrailHeader from '../TrailHeader/TrailHeader';
 import TrainingCard from '../TrainingCard/TrainingCard';
 import { Columns } from './styles';
 
