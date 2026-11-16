@@ -2,7 +2,7 @@
 
 ## Modules
 
-A **module** is a self-contained feature area under `src/modules/<name>/`. Today: `home`, `auth`, `trails`, `case-study`, `admin`, `student-summaries`, `flashcards`.
+A **module** is a self-contained feature area under `src/modules/<name>/`. Today: `home` (P01), `catalog` (P02 offer page), `auth` (A01–A03 and profile completion), `participant` (U01 dashboard), `account` (U10), `trails`, `case-study`, `admin`, `student-summaries`, `flashcards`. The product spec is in `docs/` (storyboards SB01–SB15, route ids like P01/U10, plan and pending decisions in `docs/plano-e-decisoes.md`).
 
 - `index.tsx` is the module's public API — the only file anything outside the module may import. Everything else in the module is a private implementation detail.
 - `fragments/` holds components used only inside that module (page sections, local widgets). If a fragment is needed by a second module, promote it to `shared/components` instead of importing it across modules.
@@ -41,7 +41,9 @@ src/modules/<name>/
 ## Backend, auth and routing
 
 - The backend is Supabase. The single client lives in `src/shared/lib/supabase.ts` and reads `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` (copy `.env.example` to `.env.local`). Schema changes go in `supabase/migrations/`.
-- Session state is shared, not owned by a module: `AuthProvider` in `src/shared/auth/` and `useAuth` in `src/shared/auth/hooks/`. Guard routes with `RequireAuth` (optionally `role="admin"`) and guest-only pages with `RedirectIfAuthenticated`, both in `src/shared/auth/components/`.
+- Session state is shared, not owned by a module: `AuthProvider` in `src/shared/auth/` and `useAuth` in `src/shared/auth/hooks/`. Guard routes with `RequireAuth` (optionally `role="admin"`) and guest-only pages with `RedirectIfAuthenticated`, both in `src/shared/auth/components/`. `RequireAuth` also sends a participant whose profile is incomplete (Google sign-up without UF/offer) to `/completar-cadastro`; only that page passes `allowIncompleteProfile`.
+- At most two signed-in devices per account (US26): `useSessionGuard` (run by `AuthProvider`) calls `register_session()`, which revokes the oldest login. Security definer functions that write user data should refuse revoked sessions with `public.session_is_revoked()`. "Sair" signs out this device only (`scope: 'local'`).
+- The public catalog (disciplines = `trails`, `exam_editions`, `offers`) lives in `src/shared/catalog/`; profile fields shared by sign-up and Minha conta in `src/shared/profile/`.
 - User roles live in `public.profiles.role`, never in user metadata (the client controls metadata). Permission checks must also be enforced by RLS, not only by route guards.
 - Routes are declared in `src/App.tsx`; path constants are in `src/shared/routes.ts`.
 - Load data with `useAsync` from `src/shared/hooks/useAsync.ts` (pass a stable function: module-level or `useCallback`). Writes that must be trusted (timers, submissions) go through `security definer` SQL functions, not direct table writes.
@@ -50,7 +52,9 @@ src/modules/<name>/
 ## Theme usage
 
 - Never hardcode hex colors. Always consume `colors` (and `typography`, `radii`, `spacing`) from `src/shared/theme/tokens.ts`.
-- `src/shared/theme/antdTheme.ts` maps those tokens into an Ant Design `ThemeConfig`, built on `theme.darkAlgorithm` (the whole UI is dark-mode by design). Wrap the app root in `<ConfigProvider theme={antdTheme}>` — already done in `src/App.tsx` — and reuse the same `antdTheme` object in tests via `src/shared/test/test-utils.tsx`.
+- `src/shared/theme/antdTheme.ts` maps those tokens into an Ant Design `ThemeConfig`, built on `theme.defaultAlgorithm`: the UI is light, with the brand palette (marfim background, ameixa text, lavanda surfaces, ametista for selection/focus/links as antd's `colorPrimary`, dourado for primary buttons).
+- Dourado (`colors.primary`) is for button backgrounds and graphics; for gold **text** use `colors.primaryText`, which has enough contrast on light backgrounds. Discipline colors (`trailColors`) are never the only way to identify a discipline — always show the name too.
+- Wrap the app root in `<ConfigProvider theme={antdTheme}>` — already done in `src/App.tsx` — and reuse the same `antdTheme` object in tests via `src/shared/test/test-utils.tsx`.
 - `src/shared/theme/GlobalStyle.ts` is a styled-components `createGlobalStyle` for page-level resets (background, base font, link colors) that Ant Design's theme doesn't cover.
 - Extending the theme: add new Ant Design component overrides to `antdTheme.ts`'s `components` block, referencing existing `colors`/`radii`/`spacing` tokens — don't introduce new literals inline.
 - Adding a new token: only when an existing one doesn't semantically fit (e.g. a new state color). Reuse an existing token whenever the meaning matches, even if the current value happens to look close enough — tokens are named by role, not by shade.

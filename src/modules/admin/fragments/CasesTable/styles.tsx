@@ -6,7 +6,7 @@ export const CaseTitle = styled.span`
   font-weight: 500;
 
   &:hover {
-    color: ${colors.primary};
+    color: ${colors.primaryText};
   }
 `;
 

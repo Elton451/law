@@ -23,7 +23,7 @@ export const LegendItem = styled.div`
 
 export const LegendStatus = styled.div`
   font-weight: 600;
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   font-size: 13px;
 `;
 

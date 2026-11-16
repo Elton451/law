@@ -2,9 +2,11 @@ import { theme, type ThemeConfig } from 'antd';
 import { colors, radii, spacing, typography } from './tokens';
 
 export const antdTheme: ThemeConfig = {
-  algorithm: theme.darkAlgorithm,
+  algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: colors.primary,
+    // Selection, focus and links are ametista; dourado is reserved for the
+    // primary buttons (highlighted actions), set in `components.Button`.
+    colorPrimary: colors.accent,
 
     colorSuccess: colors.success,
     colorWarning: colors.warning,
@@ -26,7 +28,9 @@ export const antdTheme: ThemeConfig = {
 
     colorLink: colors.accent,
     colorLinkHover: colors.accentSoft,
-    colorLinkActive: colors.accent,
+    colorLinkActive: colors.accentSoft,
+
+    colorTextLightSolid: colors.textOnAccent,
 
     fontFamily: typography.fontFamily,
     fontFamilyCode: typography.fontFamilyCode,
@@ -44,6 +48,9 @@ export const antdTheme: ThemeConfig = {
   components: {
     Button: {
       colorPrimary: colors.primary,
+      colorPrimaryHover: colors.primaryHover,
+      colorPrimaryActive: colors.primaryActive,
+      primaryColor: colors.textOnPrimary,
       algorithm: true,
       borderRadius: radii.pill,
       fontWeight: 600,
@@ -53,11 +60,14 @@ export const antdTheme: ThemeConfig = {
       headerBg: colors.bgBase,
       bodyBg: colors.bgLayout,
       siderBg: colors.bgBase,
+      triggerBg: colors.surface,
+      triggerColor: colors.textPrimary,
     },
     Menu: {
       itemColor: colors.textSecondary,
       itemHoverColor: colors.textPrimary,
-      itemSelectedColor: colors.primary,
+      itemSelectedColor: colors.textPrimary,
+      itemSelectedBg: colors.surface,
       itemBg: 'transparent',
       horizontalItemSelectedBg: 'transparent',
     },

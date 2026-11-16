@@ -6,7 +6,15 @@ import {
   AdminFlashcardLessonsPage,
   AdminLessonFlashcardsPage,
 } from '@modules/admin';
-import { LoginPage, SignUpPage } from '@modules/auth';
+import { AccountPage } from '@modules/account';
+import {
+  CompleteProfilePage,
+  LoginPage,
+  RecoverPasswordPage,
+  ResetPasswordPage,
+  SignUpPage,
+} from '@modules/auth';
+import { OfferPage } from '@modules/catalog';
 import { AttemptPage, CaseStudyAreaPage } from '@modules/case-study';
 import {
   FlashcardsAreaPage,
@@ -15,6 +23,7 @@ import {
   ReviewSessionPage,
 } from '@modules/flashcards';
 import Home from '@modules/home';
+import { DashboardPage } from '@modules/participant';
 import { TrailPage, TrailsPage } from '@modules/trails';
 import { AuthProvider } from '@shared/auth/AuthProvider';
 import RedirectIfAuthenticated from '@shared/auth/components/RedirectIfAuthenticated';
@@ -30,7 +39,12 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Public (P01, P02) */}
             <Route path={paths.home} element={<Home />} />
+            <Route path={paths.discipline(':disciplina')} element={<OfferPage />} />
+            <Route path={paths.offer(':disciplina', ':exame')} element={<OfferPage />} />
+
+            {/* Authentication (A01–A03) */}
             <Route
               path={paths.login}
               element={
@@ -47,6 +61,44 @@ function App() {
                 </RedirectIfAuthenticated>
               }
             />
+            <Route
+              path={paths.recoverPassword}
+              element={
+                <RedirectIfAuthenticated>
+                  <RecoverPasswordPage />
+                </RedirectIfAuthenticated>
+              }
+            />
+            {/* Not guest-only: the recovery link signs the person in to get here. */}
+            <Route path={paths.resetPassword} element={<ResetPasswordPage />} />
+            <Route
+              path={paths.completeProfile}
+              element={
+                <RequireAuth allowIncompleteProfile>
+                  <CompleteProfilePage />
+                </RequireAuth>
+              }
+            />
+
+            {/* Participant (U01, U10) */}
+            <Route
+              path={paths.dashboard}
+              element={
+                <RequireAuth>
+                  <DashboardPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={paths.account}
+              element={
+                <RequireAuth>
+                  <AccountPage />
+                </RequireAuth>
+              }
+            />
+
+            {/* Trilhas, estudo de caso and flashcards */}
             <Route
               path={paths.trails}
               element={

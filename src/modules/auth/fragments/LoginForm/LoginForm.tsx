@@ -2,10 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button, Form } from 'antd';
 import { useForm } from 'react-hook-form';
 import { loginSchema, type FormError, type LoginValues } from '../../schemas/auth';
-import TextField from '../TextField/TextField';
+import TextField from '@shared/components/TextField/TextField';
 
 type LoginFormProps = {
-  onSubmit: (values: LoginValues) => Promise<FormError | undefined>;
+  onSubmit: (values: LoginValues) => Promise<FormError<'email' | 'password'> | undefined>;
 };
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {

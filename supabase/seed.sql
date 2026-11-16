@@ -208,3 +208,25 @@ select pg_temp.seed_flashcard_lesson(
     array['O agente responde pelo excesso nas excludentes?', 'Sim, pelo excesso doloso ou culposo (art. 23, parágrafo único, CP).']
   ]
 );
+
+-- ---------------------------------------------------------------------------
+-- Calendário e ofertas de EXEMPLO (SB01, SB02). As datas são fictícias e as
+-- edições ficam marcadas como `is_demo`, que a interface exibe como
+-- "Demonstrativo". As datas reais virão do painel administrativo (US29).
+-- Preço de R$ 79,90 (RN01), em centavos.
+
+insert into public.exam_editions (number, first_phase_date, second_phase_date, published, is_demo)
+values
+  (46, current_date + 30, current_date + 72, true, true),
+  (47, current_date + 150, current_date + 192, true, true),
+  (45, current_date - 120, current_date - 78, true, true)
+on conflict (number) do nothing;
+
+insert into public.offers (trail_id, exam_edition_id, price_cents)
+select t.id, e.id, 7990
+from public.trails t
+cross join public.exam_editions e
+where e.number in (45, 46, 47)
+  -- Empresarial sem turma aberta, para demonstrar "Sem turma disponível".
+  and t.slug <> 'empresarial'
+on conflict (trail_id, exam_edition_id) do nothing;

@@ -29,7 +29,7 @@ export const RowLink = styled(Link)`
   }
 
   &:focus-visible {
-    outline: 2px solid ${colors.primary};
+    outline: 2px solid ${colors.accent};
     outline-offset: 2px;
   }
 `;

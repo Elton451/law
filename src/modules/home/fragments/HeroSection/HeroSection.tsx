@@ -1,21 +1,24 @@
 import { Button } from 'antd';
-import { useNavigate } from 'react-router';
-import { paths } from '@shared/routes';
-import { ScrollIndicator, Slogan, Title, Wrapper } from './styles';
+import VideoPlaceholder from '../VideoPlaceholder/VideoPlaceholder';
+import { Lead, Slogan, Title, Wrapper } from './styles';
 
-const HeroSection = () => {
-  const navigate = useNavigate();
+const scrollToNovelos = () =>
+  document.getElementById('novelos')?.scrollIntoView({ behavior: 'smooth' });
 
-  return (
-    <Wrapper>
-      <Slogan>desenrolando o direito</Slogan>
-      <Title level={1}>Plataforma de Gestão de Conhecimento Jurídico</Title>
-      <Button type="primary" size="large" onClick={() => navigate(paths.signUp)}>
-        ✦ Começar a Desenrolar
-      </Button>
-      <ScrollIndicator>Role para explorar ↓</ScrollIndicator>
-    </Wrapper>
-  );
-};
+/** Opening: the practical-preparation pitch, "Escolher meu novelo" and the video area (SB01). */
+const HeroSection = () => (
+  <Wrapper>
+    <Slogan>desenrolando o direito</Slogan>
+    <Title level={1}>Treine para a 2ª fase da OAB como no dia da prova</Title>
+    <Lead>
+      Escolha sua disciplina, escreva peças e questões no formato do exame, compare com o espelho e
+      acompanhe sua evolução.
+    </Lead>
+    <Button type="primary" size="large" onClick={scrollToNovelos}>
+      Escolher meu novelo
+    </Button>
+    <VideoPlaceholder />
+  </Wrapper>
+);
 
 export default HeroSection;

@@ -11,7 +11,7 @@ export const Wrapper = styled.section`
 `;
 
 export const Sparkle = styled.div`
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   font-size: 18px;
   margin-bottom: ${spacing.base}px;
 `;
@@ -25,7 +25,7 @@ export const Heading = styled.div`
   }
 
   h2:last-child {
-    color: ${colors.primary};
+    color: ${colors.primaryText};
   }
 `;
 

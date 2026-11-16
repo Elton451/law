@@ -8,7 +8,7 @@ export const Wrapper = styled.header`
 
 export const Eyebrow = styled.span`
   display: block;
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 12px;

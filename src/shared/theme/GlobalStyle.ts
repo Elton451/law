@@ -30,6 +30,18 @@ export const GlobalStyle = createGlobalStyle`
     font-size: ${typography.fontSize}px;
   }
 
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: ${typography.fontFamilyHeading};
+  }
+
+  :focus-visible {
+    outline: 2px solid ${colors.accent};
+    outline-offset: 2px;
+  }
+
   a {
     color: ${colors.accent};
 

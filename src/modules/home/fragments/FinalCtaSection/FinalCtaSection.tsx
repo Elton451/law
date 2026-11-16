@@ -15,8 +15,8 @@ const FinalCtaSection = () => {
         visual, gamificada e elegante.
       </Description>
       <Actions>
-        <Button type="primary" size="large" onClick={() => navigate(paths.signUp)}>
-          ✦ Começar gratuitamente
+        <Button type="primary" size="large" onClick={() => navigate(paths.homeSection('novelos'))}>
+          ✦ Escolher meu novelo
         </Button>
         <Button size="large" onClick={() => navigate(paths.login)}>
           Já tenho conta

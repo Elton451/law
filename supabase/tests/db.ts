@@ -5,7 +5,8 @@ import { PGlite, type Transaction } from '@electric-sql/pglite';
 const migrationsDir = path.resolve(import.meta.dirname, '../migrations');
 
 // The slice of the Supabase platform the migrations rely on: the API roles,
-// `auth.users`, `auth.uid()`, and the default grants Supabase gives those roles.
+// `auth.users`, `auth.sessions`, `auth.uid()`, `auth.jwt()`, and the default
+// grants Supabase gives those roles.
 const supabaseStub = `
   create role anon nologin;
   create role authenticated nologin;
@@ -13,14 +14,26 @@ const supabaseStub = `
   create schema auth;
   create table auth.users (
     id uuid primary key,
-    raw_user_meta_data jsonb not null default '{}'
+    raw_user_meta_data jsonb not null default '{}',
+    raw_app_meta_data jsonb not null default '{}'
+  );
+  create table auth.sessions (
+    id uuid primary key,
+    user_id uuid not null references auth.users (id) on delete cascade,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz,
+    refreshed_at timestamp,
+    user_agent text
   );
   create function auth.uid() returns uuid language sql stable as $$
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
+  create function auth.jwt() returns jsonb language sql stable as $$
+    select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb
+  $$;
 
   grant usage on schema public, auth to anon, authenticated;
-  grant execute on function auth.uid() to anon, authenticated;
+  grant execute on function auth.uid(), auth.jwt() to anon, authenticated;
   alter default privileges in schema public grant all on tables to anon, authenticated;
   alter default privileges in schema public grant all on functions to anon, authenticated;
   alter default privileges in schema public grant all on sequences to anon, authenticated;
@@ -49,19 +62,42 @@ export const createDb = async ({ before }: { before?: string } = {}) => {
   return db;
 };
 
-/** Runs `fn` the way PostgREST runs a request carrying `userId`'s JWT. */
-export const asUser = <T>(db: PGlite, userId: string, fn: (tx: Transaction) => Promise<T>) =>
+/**
+ * Runs `fn` the way PostgREST runs a request carrying `userId`'s JWT, issued
+ * for `sessionId` when given.
+ */
+export const asUser = <T>(
+  db: PGlite,
+  userId: string,
+  fn: (tx: Transaction) => Promise<T>,
+  { sessionId }: { sessionId?: string } = {},
+) =>
   db.transaction(async (tx) => {
     await tx.query(`select set_config('request.jwt.claim.sub', $1, true)`, [userId]);
+    await tx.query(`select set_config('request.jwt.claims', $1, true)`, [
+      JSON.stringify({ sub: userId, ...(sessionId && { session_id: sessionId }) }),
+    ]);
     await tx.exec('set local role authenticated');
     return fn(tx);
   });
 
+/** Runs `fn` as a visitor without an account. */
+export const asAnon = <T>(db: PGlite, fn: (tx: Transaction) => Promise<T>) =>
+  db.transaction(async (tx) => {
+    await tx.exec('set local role anon');
+    return fn(tx);
+  });
+
+/**
+ * A user signed up through an external provider, so the profile trigger
+ * accepts it without the sign-up fields. Tests of the password sign-up pass
+ * their own metadata to `auth.users`.
+ */
 export const createUser = async (db: PGlite, id: string) => {
-  await db.query(`insert into auth.users (id, raw_user_meta_data) values ($1, $2)`, [
-    id,
-    { name: 'Estudante' },
-  ]);
+  await db.query(
+    `insert into auth.users (id, raw_user_meta_data, raw_app_meta_data) values ($1, $2, $3)`,
+    [id, { name: 'Estudante' }, { provider: 'google' }],
+  );
   return id;
 };
 

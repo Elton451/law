@@ -1,6 +1,6 @@
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Tag } from 'antd';
 import styled, { css } from 'styled-components';
-import { colors, spacing } from '@shared/theme/tokens';
+import { colors, spacing, typography } from '@shared/theme/tokens';
 
 export const ShellLayout = styled(Layout)`
   min-height: 100vh;
@@ -33,4 +33,10 @@ export const Content = styled(Layout.Content)`
   @media (min-width: 992px) {
     padding: ${spacing.lg * 2}px ${spacing.lg * 2}px;
   }
+`;
+
+export const SoonTag = styled(Tag)`
+  margin-inline-start: ${spacing.base / 4}px;
+  font-size: ${typography.fontSize - 3}px;
+  line-height: 16px;
 `;

@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 
 export const Eyebrow = styled(Typography.Text)`
   display: block;
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 13px;

@@ -20,7 +20,7 @@ export const CardHeader = styled.div`
 `;
 
 export const Eyebrow = styled.span`
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 12px;

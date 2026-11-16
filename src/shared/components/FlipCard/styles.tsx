@@ -16,7 +16,7 @@ export const Scene = styled.button`
   -webkit-tap-highlight-color: transparent;
 
   &:focus-visible {
-    outline: 2px solid ${colors.primary};
+    outline: 2px solid ${colors.accent};
     outline-offset: 4px;
     border-radius: ${radii.lg}px;
   }
@@ -61,7 +61,7 @@ export const Face = styled.span<{ $back?: boolean }>`
 `;
 
 export const Label = styled.span`
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 12px;

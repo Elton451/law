@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import FullPageSpinner from '@shared/components/FullPageSpinner/FullPageSpinner';
-import { homePathForRole } from '../utils/homePathForRole';
+import { homePathFor } from '../utils/profile';
 import { useAuth } from '../hooks/useAuth';
 
 // Only same-app paths: "/x" but not "//evil.com" or "/\\evil.com", which browsers treat as other hosts.
@@ -22,7 +22,7 @@ const RedirectIfAuthenticated = ({ children }: { children: ReactNode }) => {
   if (auth.status === 'loading') return <FullPageSpinner />;
 
   if (auth.status === 'signedIn') {
-    const to = fromPath(location.state) ?? homePathForRole(auth.profile?.role);
+    const to = fromPath(location.state) ?? homePathFor(auth.profile);
     return <Navigate to={to} replace />;
   }
 

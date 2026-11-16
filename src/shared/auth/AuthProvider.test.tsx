@@ -24,9 +24,11 @@ vi.mock('@shared/lib/supabase', () => ({
   },
 }));
 vi.mock('./authService', () => ({ fetchProfile: vi.fn() }));
+vi.mock('./sessionService', () => ({ registerSession: vi.fn().mockResolvedValue('active') }));
 
-const ana: Profile = { id: 'user-ana', name: 'Ana', role: 'estudante' };
-const bia: Profile = { id: 'user-bia', name: 'Bia', role: 'estudante' };
+const complete = { uf: 'SP', offerId: 'offer-civil' };
+const ana: Profile = { id: 'user-ana', name: 'Ana', role: 'estudante', ...complete };
+const bia: Profile = { id: 'user-bia', name: 'Bia', role: 'estudante', ...complete };
 
 /** Supabase announcing an auth event, then the profile request settling. */
 const emit = async (event: AuthChangeEvent, userId: string | null) => {

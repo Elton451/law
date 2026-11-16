@@ -16,7 +16,7 @@ export const Inner = styled.div`
 `;
 
 export const Sparkle = styled.div`
-  color: ${colors.primary};
+  color: ${colors.primaryText};
   font-size: 18px;
   margin-bottom: ${spacing.base}px;
 `;

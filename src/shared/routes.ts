@@ -1,7 +1,28 @@
+// Route ids (P01, A01, U10…) follow docs/README.md → Mapa de navegação.
 export const paths = {
-  home: '/',
-  login: '/entrar',
-  signUp: '/cadastro',
+  // Public
+  home: '/', // P01
+  homeSection: (section: 'como-funciona' | 'novelos' | 'calendario') => `/#${section}`,
+  discipline: (discipline: string) => `/novelos/${discipline}`,
+  offer: (discipline: string, exam: number | string) => `/novelos/${discipline}/${exam}`, // P02
+
+  // Authentication
+  signUp: '/cadastro', // A01
+  login: '/entrar', // A02
+  recoverPassword: '/recuperar-senha', // A03
+  resetPassword: '/redefinir-senha',
+  completeProfile: '/completar-cadastro',
+
+  // Participant
+  dashboard: '/participante', // U01
+  materials: '/materiais', // U02
+  pieces: '/pecas', // U03
+  questions: '/questoes', // U06
+  history: '/historico', // U08
+  notebook: '/caderno', // U09
+  account: '/conta', // U10
+
+  // Earlier content (trilhas, estudo de caso, flashcards), kept alongside.
   trails: '/trilhas',
   trail: (slug: string) => `/trilhas/${slug}`,
   caseStudy: (slug: string) => `/trilhas/${slug}/estudo-de-caso`,
@@ -13,8 +34,8 @@ export const paths = {
   trailReview: (slug: string) => `/trilhas/${slug}/flashcards/revisao`,
   review: '/revisao',
   reviewSession: '/revisao/sessao',
-  profile: '/perfil',
-  settings: '/configuracoes',
+
+  // Administration
   admin: '/admin',
   adminCases: '/admin/casos',
   adminNewCase: '/admin/casos/novo',
@@ -22,3 +43,6 @@ export const paths = {
   adminFlashcards: '/admin/flashcards',
   adminLessonFlashcards: (lessonId: string) => `/admin/flashcards/licoes/${lessonId}`,
 } as const;
+
+/** Query parameter carrying the chosen offer through sign-up and Google sign-in (SB02). */
+export const OFFER_PARAM = 'oferta';

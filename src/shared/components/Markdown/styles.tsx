@@ -28,7 +28,7 @@ export const Prose = styled.div`
   }
 
   strong {
-    color: ${colors.primary};
+    color: ${colors.primaryText};
   }
 
   blockquote {

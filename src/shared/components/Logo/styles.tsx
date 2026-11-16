@@ -15,6 +15,6 @@ export const Wrapper = styled.div`
   }
 
   span:last-child {
-    color: ${colors.primary};
+    color: ${colors.primaryText};
   }
 `;
